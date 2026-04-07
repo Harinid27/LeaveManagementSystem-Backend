@@ -57,6 +57,12 @@ const userSchema = new mongoose.Schema(
     leaveBalance: {
       type: leaveBalanceSchema,
       default: () => ({})
+    },
+    institutionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      index: true,
+      default: null
     }
   },
   {
@@ -87,6 +93,7 @@ userSchema.methods.toSafeObject = function toSafeObject() {
     createdBy: this.createdBy,
     reportingTo: this.reportingTo,
     leaveBalance: this.leaveBalance,
+    institutionId: this.institutionId,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt
   };

@@ -27,7 +27,8 @@ export const createUser = async (req, res, next) => {
       role,
       department,
       createdBy: req.user._id,
-      reportingTo: req.user._id
+      reportingTo: req.user._id,
+      institutionId: req.user.institutionId
     });
 
     res.status(201).json({
@@ -129,6 +130,7 @@ export const getSummary = async (req, res, next) => {
   try {
     if (req.user.role === ROLES.PRINCIPAL) {
       const counts = await User.aggregate([
+        { $match: { institutionId: req.user.institutionId } },
         {
           $group: {
             _id: "$role",
@@ -232,7 +234,8 @@ export const deleteUser = async (req, res, next) => {
 export const getHierarchy = async (req, res, next) => {
   try {
     if (req.user.role === ROLES.PRINCIPAL) {
-      const users = await User.find({}).select("name role email department reportingTo").lean();
+      const users = await User.find({ institutionId: req.user.institutionId })
+        .select("name role email department reportingTo").lean();
 
       const buildTree = (parentId = null) => {
         return users
@@ -370,7 +373,10 @@ export const getAllUsers = async (req, res, next) => {
       sortOrder = "desc" 
     } = req.query;
 
-    const query = { _id: { $ne: req.user._id } };
+    const query = { 
+      _id: { $ne: req.user._id },
+      institutionId: req.user.institutionId
+    };
 
     if (search) {
       query.$or = [
@@ -467,7 +473,8 @@ export const bulkImportUsers = async (req, res, next) => {
           role: role.toLowerCase().trim(),
           department,
           reportingTo,
-          createdBy: req.user._id
+          createdBy: req.user._id,
+          institutionId: req.user.institutionId
         });
 
         summary.success++;

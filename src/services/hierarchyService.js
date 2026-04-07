@@ -34,7 +34,7 @@ export const buildApprovalChain = async (userId) => {
 export const getScopedUserQuery = async (user) => {
   switch (user.role) {
     case ROLES.PRINCIPAL:
-      return {};
+      return { institutionId: user.institutionId };
     case ROLES.HOD: {
       // Find all professors created by/reporting to this HOD
       const professors = await User.find({ 

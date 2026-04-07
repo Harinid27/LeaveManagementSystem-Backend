@@ -25,15 +25,18 @@ export const register = async (req, res, next) => {
       throw new HttpError(409, "User with this email already exists");
     }
 
-    const user = await User.create({
+    const user = new User({
       name: req.body.name,
       email,
       password: req.body.password,
       role: ROLES.PRINCIPAL,
-      department: req.body.department || "Administration",
+      department: "Administration",
       reportingTo: null,
       createdBy: null
     });
+
+    user.institutionId = user._id;
+    await user.save();
 
     res.status(201).json({
       message: "Principal registered successfully",
