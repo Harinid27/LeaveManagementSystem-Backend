@@ -18,11 +18,6 @@ export const register = async (req, res, next) => {
   try {
     requireFields(req.body, ["name", "email", "password"]);
 
-    const principalExists = await User.exists({ role: ROLES.PRINCIPAL });
-    if (principalExists) {
-      throw new HttpError(403, "Initial principal account already exists");
-    }
-
     const email = req.body.email.toLowerCase().trim();
     const existingUser = await User.findOne({ email });
 
