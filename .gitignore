@@ -1,0 +1,9 @@
+node_modules
+.env
+*.log
+npm-debug.log*
+uploads/
+temp-csv/
+.vscode/
+.idea/
+.DS_Store
