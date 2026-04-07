@@ -25,7 +25,12 @@ app.use(
       if (!origin) return callback(null, true);
       
       const normalizedOrigin = origin.replace(/\/$/, "");
-      if (allowedOrigins.includes(normalizedOrigin)) {
+      
+      // Check if origin is in the allowed list OR is a vercel preview URL
+      const isAllowed = allowedOrigins.includes(normalizedOrigin);
+      const isVercelPreview = normalizedOrigin.endsWith(".vercel.app");
+
+      if (isAllowed || isVercelPreview) {
         return callback(null, true);
       }
       
